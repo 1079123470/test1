@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.example.mapper.UserMapper">
+<!-- Result Map -->
+<resultMap id="BaseResultMap" type="UserModel">
+  <result column="id" property="id"/>
+  <result column="usercode" property="code"/>
+  <result column="username" property="name"/>
+  <result column="password" property="pass"/>
+</resultMap>
+<!-- table all fields sql片段 -->
+<sql id="Base-Column-List">
+id,usercode,username,password
+</sql>
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+where 1=1
+<if test="id != null">and id=#{id}</if>
+<if test="code != null and code != ''">and usecode=#{code}</if>
+<if test="name != null and name != ''">and usename=#{name}</if>
+<if test="pass != null and pass != ''">and password=#{pass}</if>
+</sql>
+<!-- 插入记录 -->
+<!--selectKey 会将 SELECT LAST_INSERT_ID()的结果放入到传入的model的主键里面， keyProperty 对应的model中的主键的属性名，这里是 user 中的id，因为它跟数据库的主键对应 order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行,多用与自增主键， BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，这种适合那种主键不是自增的类型 resultType 主键类型 -->
+<insert id="insert" parametertype="object">
+<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">SELECT LAST_INSERT_ID() </selectKey>
+insert into st_jsp.user(useercode,username,password)values(#{code},#{name},#{pass})
+</insert>
+<!-- 删除记录 -->
+<delete id="delete" parameterType="object">delete from st_jsp.user where id = #{id} </delete>
+<delete id="deleteModel" parameterType="object">
+delete from st_jsp.user
+<include refid="Example_Where_Clause"/>
+</delete>
+<!-- 根据，修改记录 -->
+
+
+<update id="update" parameterType="Object">update st_jsp.user set username = #{name}, password = #{pass} where usercode = #{code} </update>
+
+<!-- 修改记录，只修改只不为空的字段 -->
+
+<update id="updateActive" parameterType="Object"/>
+
+<!-- 根据查询 系统用户 -->
+
+<select id="selectId" parameterType="Object" resultMap="BaseResultMap">selectid, usercode, username, passwordfrom st_jsp.user where usercode = #{id} </select>
+
+<!-- 系统用户 列表总数 -->
+
+-<select id="selectCount" parameterType="UserModel" resultType="java.lang.Integer">
+select count(1) from st_jsp.user 
+
+<include refid="Example_Where_Clause"/>
+</select>
+<!-- 查询系统用户列表 -->
+<select id="selectModel" parameterType="Object" resultMap="BaseResultMap"></select>
+</mapper>
+
